@@ -10,9 +10,9 @@ This is created to cover a specific usage case. Where you have servers available
 * 512MB RAM
 
 ## TODO Requirements
-[ ] HF COULD be installed in a raspberry pi.
-[ ] HF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
-[ ] This system MUST be able to deploy into a new server with composer.
-[ ] Operating system WIDE.
-[ ] HF
+- [ ] HF COULD be installed in a raspberry pi.
+- [ ] HF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
+- [ ] This system MUST be able to deploy into a new server with composer.
+- [ ] Operating system WIDE.
+- [ ] HF
 
