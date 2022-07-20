@@ -1,5 +1,5 @@
 # HydraFunctions
-A.K.A. HF, a rapid FaaS deployment system for non experts.
+A.K.A. PHF, a rapid FaaS deployment system for non experts.
 [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
 
 ## Intentions
@@ -9,10 +9,30 @@ This is created to cover a specific usage case. Where you have servers available
 * Any kind of Debian based system with PHP 8.0+
 * 512MB RAM
 
+## Install
+
+Download the latest release from releases page.
+
+```
+$ wget latest
+$ sudo mv phf.phar /usr/local/bin/phf
+```
+
+On the server
+```
+$ phf install new node
+installing...
+hash:2189347yr9f7as
+key:298f89982173197
+```
+
+In the client
+$ phf
+
 ## TODO Requirements
-- [ ] HF COULD be installed in a raspberry pi.
-- [ ] HF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
+- [ ] PHF COULD be installed in a raspberry pi.
+- [ ] PHF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
 - [ ] This system MUST be able to deploy into a new server with composer.
 - [ ] Operating system WIDE.
-- [ ] HF
+- [ ] PHF
 
