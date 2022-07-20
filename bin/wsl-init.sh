@@ -10,6 +10,8 @@ echo "What is your WSL user group? (Same as username if you're unsure) [web]"
 read WSL_USER_GROUP
 WSL_USER_GROUP=${WSL_USER_GROUP:-web}
 
+sudo useradd -m -d /home/$WSL_USER_NAME $WSL_USER_NAME -s /bin/bash
+
 # Update Package List
 apt-get update
 
@@ -26,7 +28,7 @@ apt-get install -y software-properties-common curl
 apt-add-repository ppa:ondrej/php -y
 apt-add-repository ppa:chris-lea/redis-server -y
 # NodeJS
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+#curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
 ## Update Package Lists
 apt-get update
@@ -112,10 +114,10 @@ usermod -a -G www-data $WSL_USER_NAME
 id $WSL_USER_NAME
 groups $WSL_USER_GROUP
 
-# Install Node
-apt-get install -y nodejs
-/usr/bin/npm install -g npm
-#/usr/bin/npm install -g gulp-cli
-#/usr/bin/npm install -g bower
-/usr/bin/npm install -g yarn
-#/usr/bin/npm install -g grunt-cli
+## Install Node
+#apt-get install -y nodejs
+#/usr/bin/npm install -g npm
+##/usr/bin/npm install -g gulp-cli
+##/usr/bin/npm install -g bower
+#/usr/bin/npm install -g yarn
+##/usr/bin/npm install -g grunt-cli
