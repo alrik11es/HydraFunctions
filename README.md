@@ -1,6 +1,6 @@
 # HydraFunctions
 A.K.A. HF, a rapid FaaS deployment system for non experts.
-[https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard](Basic library standard)
+[Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
 
 ## Intentions
 This is created to cover a specific usage case. Where you have servers available under your control. But somehow you need to deploy applications on those servers that only you are going to use.
