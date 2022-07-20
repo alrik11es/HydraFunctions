@@ -1,5 +1,5 @@
-# HydraFunctions
-A.K.A. PHF, a rapid FaaS deployment system for non experts.
+# MetalFunctions
+A.K.A. MF, a rapid FaaS deployment system for non experts.
 [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
 
 ## Intentions
@@ -15,24 +15,24 @@ Download the latest release from releases page.
 
 ```
 $ wget latest
-$ sudo mv phf.phar /usr/local/bin/phf
+$ sudo mv mf.phar /usr/local/bin/phf
 ```
 
 On the server
 ```
-$ phf install new node
+$ mf install new node
 installing...
 hash:2189347yr9f7as
 key:298f89982173197
 ```
 
 In the client
-$ phf
+$ mf
 
 ## TODO Requirements
-- [ ] PHF COULD be installed in a raspberry pi.
-- [ ] PHF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
+- [ ] MF COULD be installed in a raspberry pi.
+- [ ] MF MUST be able to be operated by people that don't understand server architecture or more than basic server commands.
 - [ ] This system MUST be able to deploy into a new server with composer.
 - [ ] Operating system WIDE.
-- [ ] PHF
+- [ ] MF
 
