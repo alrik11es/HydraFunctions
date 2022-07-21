@@ -8,7 +8,7 @@ cat << EOF
                                                 INSTALLER
 
 Welcome to the MF installer. This was created to help you to prepare a
-PHP FullStack node server. Or just to install MF.
+PHP FullStack node server.
 
 
 EOF
@@ -16,8 +16,7 @@ EOF
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo "1) PHP FullStack install (PHP 8.0 + NGINX + MF)"
-echo "2) MF install only"
+echo "1) PHP FullStack install (PHP 8.0 + NGINX)"
 echo ""
 echo "Please select a number and press enter to continue:";
 read MF;
@@ -41,9 +40,6 @@ case $MF in
             else
               echo "Your system is not FullStack eligible. Please install MF only and follow the steps in README";
             fi
-          ;;
-        "2")
-            echo "MF Install only selected";
           ;;
         *)
           echo "Not a valid argument"
