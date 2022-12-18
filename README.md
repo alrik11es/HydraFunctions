@@ -1,12 +1,13 @@
-# MetalFunctions
-A.K.A. MF, a rapid FaaS deployment system for non experts.
-[Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
+__# Metal Functions
+A.K.A. MF, a CLI for FaaS like deployment in PHP for non experts.
 
-## Intentions
-This is created to cover a specific usage case. Where you have servers available under your control. But somehow you need to deploy applications on those servers that only you are going to use.
+## Use and intentions
+This project aims to deploy multiple different functions in a server with Nginx and PHP. It will create the Nginx virtual hosts just for you. You will only have to know how to use this CLI. A MF could be a directory or a php single file.
 
-## Node System requirements
-* Any kind of Debian based system
+This project is also compatible with [Deployer](https://deployer.org/), we share some of the libraries so most of the Host configuration is the same.
+
+## MF System requirements
+* Any kind of Debian based system should do
 * PHP >=8.0 with Nginx
 * 512MB RAM
 
@@ -14,9 +15,15 @@ This is created to cover a specific usage case. Where you have servers available
 * PHP >=8.0
 
 ## Install
+* 
+* In the remote host you need Nginx and PHP 7.4 installed on any host.
+* In your system for the CLI, you require SSH access to a server with Nginx and PHP >=7.3.
 
-* Fullstack install. I've prepared a handy script (Based on Laravel Homestead) that deploys a complete PHP 8.0 + Nginx suite ready to work with MetalFunctions. Useful to prepare your VPS or server.
-* Normal install. Needed only on the client, you require SSH access to a server with Nginx and PHP 8.0.
+First you will need to install MF.
+```
+$ wget https://github.com/alrik11es/releases/mf.phar
+$ sudo mv mf.phar /usr/local/bin/mf
+```
 
 Download the latest release from releases page.
 
@@ -27,12 +34,46 @@ $ cd MetalFunctions
 $ ./installer.sh
 ```
 
-### CLI
+### Using Metal Functions
+Well, supossing that you already have a PHP >=7.3 with Nginx server then you can get MF.
+
+First you will need to install MF.
 ```
 $ wget https://github.com/alrik11es/releases/mf.phar
 $ sudo mv mf.phar /usr/local/bin/mf
-$ mf node nodename:ip:/home/user/.ssh/id_rsa.key # stores in a local file the connection details
-$ mf add function
- ... Function name 89x7tya : http://ip/89x7tya
-$ mf deploy # deploys the actual directory
 ```
+
+
+Create a directory. `$ mkdir hello-world` and create a file called `$ touch metal.php`. This file is going to be your settings file. You can add here the URL of the function and your start script. View the example as follows.
+
+```php
+<?php
+namespace Deployer;
+
+set('function_url', '/hello-world');
+set('function_start_script', 'helloworld.php');
+
+host('111.55.222.222')
+    ->set('remote_user', 'ubuntu')
+    ->set('become', 'root')
+    ->set('identity_file', '~/.ssh/mykey');
+```
+
+Once you're done you can start using MF commands in the shell.
+
+```
+$ echo "<?php echo 'Hello world';" > helloworld.php
+$ mf deploy
+ ... Function name 89x7tya : http://ip/89x7tya
+```
+DONE.
+
+Using my own [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
+
+## TODO
+
+-[ ] Host check for PHP and Nginx
+-[ ] Host check to enable metal functions in disabling default NGINX file
+-[ ] Deploy function
+-[ ] Init config in host
+-[ ] Rollback a function
