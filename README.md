@@ -1,10 +1,10 @@
-__# Metal Functions
-A.K.A. MF, a CLI for FaaS like deployment in PHP for non experts.
+# Metal Functions
+A.K.A. MF, a CLI for FaaS like deployment in PHP metal servers for non experts.
 
 ## Use and intentions
 This project aims to deploy multiple different functions in a server with Nginx and PHP. It will create the Nginx virtual hosts just for you. You will only have to know how to use this CLI. A MF could be a directory or a php single file.
 
-This project is also compatible with [Deployer](https://deployer.org/), we share some of the libraries so most of the Host configuration is the same.
+This project is also compatible with [Deployer](https://deployer.org/) config files, we share some of the libraries so most of the Host configuration is the same.
 
 ## MF System requirements
 * Any kind of Debian based system should do
@@ -15,7 +15,7 @@ This project is also compatible with [Deployer](https://deployer.org/), we share
 * PHP >=8.0
 
 ## Install
-* 
+
 * In the remote host you need Nginx and PHP 7.4 installed on any host.
 * In your system for the CLI, you require SSH access to a server with Nginx and PHP >=7.3.
 
@@ -66,13 +66,14 @@ $ echo "<?php echo 'Hello world';" > helloworld.php
 $ mf deploy
  ... Function name 89x7tya : http://ip/89x7tya
 ```
+
 DONE.
 
 Using my own [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos/basic-library-standard)
 
 ## TODO
 
--[ ] Host check for PHP and Nginx
+-[x] Host check for PHP and Nginx
 -[ ] Host check to enable metal functions in disabling default NGINX file
 -[ ] Deploy function
 -[ ] Init config in host
