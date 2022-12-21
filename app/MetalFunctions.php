@@ -167,7 +167,7 @@ class MetalFunctions
 
         $this->createMetalFunctionsIndex($host);
         // Restart NGINX gracefully
-        $this->ssh()->run($host, 'service nginx restart');
+        $this->ssh()->run($host, 'service nginx reload');
     }
 
     public function createMetalFunctionsIndex($host)

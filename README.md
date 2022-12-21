@@ -14,6 +14,16 @@ This project is also compatible with [Deployer](https://deployer.org/) config fi
 ## CLI System requirements
 * PHP >=8.0
 
+## Build from source
+
+Download and decompress this repo on any directory.
+
+```
+$ composer install
+$ ./mf app:build
+$ sudo mv builds/mf /usr/local/bin/mf
+```
+
 ## Install
 
 * In the remote host you need Nginx and PHP 7.4 installed on any host.
@@ -21,8 +31,8 @@ This project is also compatible with [Deployer](https://deployer.org/) config fi
 
 First you will need to install MF.
 ```
-$ wget https://github.com/alrik11es/releases/mf.phar
-$ sudo mv mf.phar /usr/local/bin/mf
+$ wget https://github.com/alrik11es/releases/... (Not yet)
+$ sudo mv mf /usr/local/bin/mf
 ```
 
 Download the latest release from releases page.
@@ -73,8 +83,9 @@ Using my own [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos
 
 ## TODO
 
--[x] Host check for PHP and Nginx
--[ ] Host check to enable metal functions in disabling default NGINX file
--[ ] Deploy function
--[ ] Init config in host
+-[X] Host check for PHP and Nginx
+-[X] Host check to enable metal functions in disabling default NGINX file
+-[X] Deploy function
+-[X] Delete function
+-[ ] List functions
 -[ ] Rollback a function
