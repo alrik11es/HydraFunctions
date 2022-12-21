@@ -2,7 +2,6 @@
 namespace App\Commands;
 
 use App\MetalFunctions;
-use App\Nginx\NginxParser;
 use Deployer\Exception\Exception;
 use Deployer\Task\Context;
 use Illuminate\Console\Scheduling\Schedule;
@@ -37,16 +36,14 @@ class RmCommand extends Command
             $host->config()->load();
             Context::push(new Context($host));
 
-            $metal_route = '/var/metal-functions/'.md5($host->get('function_url'));
-            // Detectar la version de PHP y de NGINX si no pedir al usuario definición de la q hay que usar para Nginx.
+            $function_hash = substr(md5($host->get('function_url')), 0, 7);
+            $metal_route = '/var/metal-functions/'.$function_hash;
+
             $result = $mf->ssh()->run($host, 'rm -rf '.$metal_route);
 
-            // delete route from NGINX and
-            // restart NGINX gracefully
-
+            $mf->removeFunction($host);
         }
-
-
+        return 1;
     }
 
     /**

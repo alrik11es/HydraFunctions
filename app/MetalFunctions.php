@@ -128,9 +128,8 @@ class MetalFunctions
         $this->saveNginxConfigAndRestart($host, $nginx_conf);
     }
 
-    public function getNginxConfig($host): string
+    public function getNginxConfig($host)
     {
-        $function_start_script = $host->get('function_start_script');
         try {
             $nginx_conf = $this->ssh()->run($host, 'cat /etc/nginx/sites-available/metal-functions');
         } catch (\Exception $e) {
@@ -139,7 +138,7 @@ class MetalFunctions
         return $nginx_conf;
     }
 
-    public function removeFunction($host, $function_hash): void
+    public function removeFunction($host): void
     {
         $nginx_conf = $this->getNginxConfig($host);
         $nginx = new NginxConfig($nginx_conf);
@@ -164,8 +163,26 @@ class MetalFunctions
 
         // ASK The user if he wants to enable metal functions or not in the case that there's another listener
 
-        $this->ssh()->run($host, 'ln -s /etc/nginx/sites-available/metal-functions /etc/nginx/sites-enabled');
+        $this->ssh()->run($host, 'ln -sf /etc/nginx/sites-available/metal-functions /etc/nginx/sites-enabled');
+
+        $this->createMetalFunctionsIndex($host);
         // Restart NGINX gracefully
         $this->ssh()->run($host, 'service nginx restart');
+    }
+
+    public function createMetalFunctionsIndex($host)
+    {
+        $user = $host->get('remote_user');
+        $filename = 'metal-functions.html';
+        $file = MetalFunctions::loadTemplate('Templates/'.$filename);
+        file_put_contents($filename, $file);
+        $this->rsync()->call($host, $filename, $user . '@' . $host->getHostname() . ':' . '/var/metal-functions');
+        unlink($filename);
+    }
+
+    static public function loadTemplate($file){
+        ob_start();
+        include($file);
+        return ob_get_clean();
     }
 }

@@ -14,46 +14,7 @@ class NginxConfig
 
     public function __construct($string = null)
     {
-        $default_config = <<<DOC
-server {
-
-    listen 80 default_server;
-    listen [::]:80 default_server ipv6only=on;
-
-    root "/var/metal-functions";
-
-    index index.php;
-
-    charset utf-8;
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-
-    access_log off;
-    error_log  /var/log/nginx/metal-functions.log error;
-    sendfile off;
-
-    client_max_body_size 100m;
-
-    location ~ \.php$ {
-        include /etc/nginx/snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
-        fastcgi_connect_timeout 1200;
-        fastcgi_send_timeout 1200;
-        fastcgi_read_timeout 1200;
-        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
-
-        include /etc/nginx/fastcgi_params;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
-DOC;
+        $default_config = MetalFunctions::loadTemplate('Templates/config.php');
         if($string) {
             $this->parse($string);
         } else {
