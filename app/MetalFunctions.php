@@ -115,13 +115,8 @@ class MetalFunctions
      */
     public function addFunction($host, $function_hash): void
     {
-        $user = $host->get('remote_user');
         $function_start_script = $host->get('function_start_script');
-        try {
-            $nginx_conf = $this->ssh()->run($host, 'cat /etc/nginx/sites-available/metal-functions');
-        } catch (\Exception $e) {
-            $nginx_conf = null;
-        }
+        $nginx_conf = $this->getNginxConfig($host);
 
         $nginx = new NginxConfig($nginx_conf);
 
@@ -130,6 +125,35 @@ class MetalFunctions
             ->addFunction($host->get('function_url'), '/' . $function_hash . '/' . $function_start_script)
             ->build();
 
+        $this->saveNginxConfigAndRestart($host, $nginx_conf);
+    }
+
+    public function getNginxConfig($host): string
+    {
+        $function_start_script = $host->get('function_start_script');
+        try {
+            $nginx_conf = $this->ssh()->run($host, 'cat /etc/nginx/sites-available/metal-functions');
+        } catch (\Exception $e) {
+            $nginx_conf = null;
+        }
+        return $nginx_conf;
+    }
+
+    public function removeFunction($host, $function_hash): void
+    {
+        $nginx_conf = $this->getNginxConfig($host);
+        $nginx = new NginxConfig($nginx_conf);
+
+        $nginx_conf = $nginx
+            ->removeFunction($host->get('function_url'))
+            ->build();
+
+        $this->saveNginxConfigAndRestart($host, $nginx_conf);
+    }
+
+    public function saveNginxConfigAndRestart($host, $nginx_conf): void
+    {
+        $user = $host->get('remote_user');
         file_put_contents('metal-functions', $nginx_conf);
         $this->rsync()->call($host, 'metal-functions', $user . '@' . $host->getHostname() . ':' . '/etc/nginx/sites-available');
         unlink('metal-functions');
