@@ -83,9 +83,9 @@ Using my own [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos
 
 ## TODO
 
--[X] Host check for PHP and Nginx
--[X] Host check to enable metal functions in disabling default NGINX file
--[X] Deploy function
--[X] Delete function
--[ ] List functions
--[ ] Rollback a function
+- [X] Host check for PHP and Nginx
+- [X] Host check to enable metal functions in disabling default NGINX file
+- [X] Deploy function
+- [X] Delete function
+- [ ] List functions
+- [ ] Rollback a function
