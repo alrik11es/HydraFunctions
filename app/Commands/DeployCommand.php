@@ -49,9 +49,9 @@ class DeployCommand extends Command
         $this->info('Deploying function');
         $mf = new MetalFunctions($this->getApplication(), $this->getOutput());
 
-        $ssh = $mf->ssh();
-        $rsync = $mf->rsync();
-        $process = $mf->process();
+        $this->ssh = $mf->ssh();
+        $this->rsync = $mf->rsync();
+        $this->process = $mf->process();
 
         $localhost = new Localhost();
         Context::push(new Context($localhost));
@@ -59,50 +59,33 @@ class DeployCommand extends Command
         foreach (Deployer::get()->hosts as $hostname => $host) {
             $host->config()->load();
             Context::push(new Context($host));
-            // Detect the version of PHP and NGINX if not ask the user to define one to use for Nginx.
-
-            $version = $mf->getHostLatestPhpVersion($host);
 
             // Comprobar si estan creadas las carpetas del sistema Metal Functions
             $function_hash = substr(md5($host->get('function_url')), 0, 7);
             $metal_route = '/var/metal-functions/'.$function_hash;
+
+            // Detect the version of PHP and NGINX if not ask the user to define one to use for Nginx.
+
             $user = $host->get('remote_user');
-            $function_start_script = $host->get('function_start_script');
-            $ssh->run($host, 'mkdir -p '.$metal_route.' && chown '.$user.':'.$user.' '.$metal_route);
+            $this->ssh->run($host, 'mkdir -p '.$metal_route.' && chown '.$user.':'.$user.' '.$metal_route);
 
             // Subir el directorio actual comprimido y descomprimirlo en el remoto
-            $process->run($localhost, 'tar -czf file.tar.gz ./');
+            $this->process->run($localhost, 'tar -czf file.tar.gz ./');
 
-            $rsync->call($host, 'file.tar.gz', $user.'@'.$host->getHostname().':'.$metal_route);
+            $this->rsync->call($host, 'file.tar.gz', $user.'@'.$host->getHostname().':'.$metal_route);
 
-            $process->run($localhost, 'rm file.tar.gz');
+            $this->process->run($localhost, 'rm file.tar.gz');
 
-            $ssh->run($host, 'cd '.$metal_route.' && tar -xvzf file.tar.gz');
-            $ssh->run($host, 'cd '.$metal_route.' && rm file.tar.gz');
-            $ssh->run($host, 'chmod 755 '.$metal_route.' -R');
+            $this->ssh->run($host, 'cd '.$metal_route.' && tar -xvzf file.tar.gz');
+            $this->ssh->run($host, 'cd '.$metal_route.' && rm file.tar.gz');
+            $this->ssh->run($host, 'chmod 755 '.$metal_route.' -R');
 
-            // Modificar virtualhost de NGINX
+            $mf->addFunction($host, $function_hash);
 
-            $file_exist = $ssh->run($host, '[ ! -f /etc/nginx/sites_available/metal-functions ] && echo "1" || echo "0"');
-            if(trim($file_exist)) {
-                $nginx_conf = $ssh->run($host, 'cat /etc/nginx/sites-available/metal-functions');
-            } else {
-                $nginx_conf = null;
-            }
-
-            $nginx = new NginxConfig($nginx_conf);
-
-            $nginx_conf = $nginx
-                ->removeFunction($host->get('function_url'))
-                ->addFunction($host->get('function_url'), '/'.$function_hash.'/'.$function_start_script)
-                ->build();
-
-            // Reiniciar NGINX gracefully
-            xdebug_break();
             $this->info('... Function hash '.$function_hash.' : http://'.$hostname.$host->get('function_url'));
         }
 
-
+        return 1;
     }
 
     /**

@@ -52,6 +52,16 @@ class MetalFunctions
         return $this->logger;
     }
 
+    public function getHosts()
+    {
+        return Deployer::get()->hosts;
+    }
+
+    public function getConfig($name)
+    {
+        return Deployer::get()->config->get($name);
+    }
+
     public function ssh()
     {
         return new Client(Deployer::get()->output, $this->getPrinter(), $this->getLogger());
@@ -91,13 +101,47 @@ class MetalFunctions
         return last($has_fpm);
     }
 
-    public function getHosts()
+    /**
+     * @param Client $this->ssh
+     * @param $host
+     * @param $function_hash
+     * @param $function_start_script
+     * @param Rsync $rsync
+     * @param $user
+     * @return void
+     * @throws Exception
+     * @throws \Deployer\Exception\RunException
+     * @throws \Deployer\Exception\TimeoutException
+     */
+    public function addFunction($host, $function_hash): void
     {
-        return Deployer::get()->hosts;
-    }
+        $user = $host->get('remote_user');
+        $function_start_script = $host->get('function_start_script');
+        try {
+            $nginx_conf = $this->ssh()->run($host, 'cat /etc/nginx/sites-available/metal-functions');
+        } catch (\Exception $e) {
+            $nginx_conf = null;
+        }
 
-    public function getConfig($name)
-    {
-        return Deployer::get()->config->get($name);
+        $nginx = new NginxConfig($nginx_conf);
+
+        $nginx_conf = $nginx
+            ->removeFunction($host->get('function_url'))
+            ->addFunction($host->get('function_url'), '/' . $function_hash . '/' . $function_start_script)
+            ->build();
+
+        file_put_contents('metal-functions', $nginx_conf);
+        $this->rsync()->call($host, 'metal-functions', $user . '@' . $host->getHostname() . ':' . '/etc/nginx/sites-available');
+        unlink('metal-functions');
+        $this->ssh()->run($host, 'chown root:root /etc/nginx/sites-available/metal-functions');
+        $this->ssh()->run($host, 'chmod 644 /etc/nginx/sites-available/metal-functions');
+
+        // Check if there's another config enabled listening in port 80 without server_name (for all connections)
+
+        // ASK The user if he wants to enable metal functions or not in the case that there's another listener
+
+        $this->ssh()->run($host, 'ln -s /etc/nginx/sites-available/metal-functions /etc/nginx/sites-enabled');
+        // Restart NGINX gracefully
+        $this->ssh()->run($host, 'service nginx restart');
     }
 }

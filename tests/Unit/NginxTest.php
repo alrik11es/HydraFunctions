@@ -23,7 +23,7 @@ class NginxTest extends TestCase
     {
         $nginx = new NginxConfig($start);
         $final = $nginx->addFunction('/hello-world', '/helloworld.php')->build();
-        $this->assertEquals($final, $result);
+        $this->assertEquals($result, $final);
     }
 
     public function nginxRemoveProvider()
@@ -43,7 +43,6 @@ class NginxTest extends TestCase
     {
         $nginx = new NginxConfig($start);
         $final = $nginx->removeFunction('/hello-world')->build();
-        $this->assertEquals($final, $result);
+        $this->assertEquals($result, $final);
     }
-
 }

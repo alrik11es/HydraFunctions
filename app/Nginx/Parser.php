@@ -37,8 +37,7 @@ class Parser
     public function parse()
     {
         $this->parsed = $this->recursiveParsing([], 0);
-        $result = $this->parsed[1];
-        array_pop($result);
+        $result = [$this->parsed[1][0]];
         return $result;
     }
 
@@ -47,11 +46,17 @@ class Parser
         for ($i=$start; $i<count($this->tokenized); $i++) {
             $token = $this->tokenized[$i];
             if ($token->type == Lexer::LBRACKET) {
+                $base = $this->tokenized[$i-1];
+                array_pop($parent);
+                $class = new \stdClass();
+                $class->expr = $base->text;
                 $i++;
-                list($i, $parent[]) = $this->recursiveParsing([], $i);
+                list($i, $children) = $this->recursiveParsing([], $i);
+                $class->children = $children;
+                $parent[] = $class;
             } else if ($token->type == Lexer::RBRACKET) {
                 break;
-            } else {
+            } else if ($token->text != '<EOF>') {
                 $parent[] = $token->text;
             }
         }
@@ -71,15 +76,15 @@ class Parser
     {
         $separator = "\t";
         foreach ($arr as $line) {
-            if(is_array($line)) {
-                $tabs = str_repeat($separator, $level);
+            $tabs = str_repeat($separator, $level);
+            if(is_object($line)) {
+                $result[] = $tabs.trim($line->expr);
                 $result[array_key_last($result)] = $result[array_key_last($result)].' {';
                 $level++;
-                $this->recursiveBuilding($line, $result, $level);
+                $this->recursiveBuilding($line->children, $result, $level);
                 $level--;
                 $result[] = $tabs.'}';
             } else {
-                $tabs = str_repeat($separator, $level);
                 $result[] = $tabs.trim($line);
             }
         }
