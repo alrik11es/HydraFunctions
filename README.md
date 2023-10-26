@@ -87,5 +87,6 @@ Using my own [Basic library standard](https://www.msfsoftware.com/art%C3%ADculos
 - [X] Host check to enable metal functions in disabling default NGINX file
 - [X] Deploy function
 - [X] Delete function
+- [ ] Docker container
 - [ ] List functions
 - [ ] Rollback a function
